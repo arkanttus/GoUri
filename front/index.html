@@ -15,22 +15,28 @@
     <title>GoUri</title>
 
     <style>
+        ::-webkit-input-placeholder {
+            color: #777;
+        }
+
         /* label color */
         .input-field label {
-            color: white;
+            color: #444;
         }
 
         .input-field .prefix.active {
-            color: #1e88e5  ;
+            color: #1e88e5;
         }
+
         /* label focus color */
-        .input-field input[type=text]:focus + label {
-            color: #1e88e5   !important;
+        .input-field input[type=text]:focus+label {
+            color: #1e88e5 !important;
         }
+
         /* label underline focus color */
         .input-field input[type=text]:focus {
-            border-bottom: 1px solid #1e88e5   !important;
-            box-shadow: 0 1px 0 0 #1e88e5   !important;
+            border-bottom: 1px solid #1e88e5 !important;
+            box-shadow: 0 1px 0 0 #1e88e5 !important;
         }
     </style>
 </head>
@@ -42,31 +48,37 @@
             <div class="s6 center-align">
                 <h4>GoUri</h4>
             </div>
-            <form class="col s12">
-                <div class="row">
-                    <div class="input-field col s12 m6 offset-m3">
-                        <i class="material-icons prefix">account_circle</i>
-                        <input id="icon_prefix" type="text" class="validate input1" >
-                        <label for="icon_prefix" class="lb1">
-                            Id usuários
-                        </label>
-                    </div>
-                    <div class="input-field col s12 m6 offset-m3">
-                        <i class="material-icons prefix">format_list_bulleted</i>
-                        <input id="icon_telephone" type="text" class="validate input2">
-                        <label for="icon_telephone" class="lb2">
-                            Id problemas
-                        </label>
-                    </div>
-                    <div class="col s12 m6 offset-m3">
-                            <button class="btn btn-block waves-effect waves-light" type="submit" 
-                                    name="action" style="width: 100%; background-color: #1e88e5;">
+            <div class="col s12 m6 offset-m3">
+                <div class="card">
+                    <div class="card-content">
+                        <form>
+
+                            <div class="input-field">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="icon_prefix" type="text" class="validate input1">
+                                <label for="icon_prefix" class="lb1">
+                                    Id usuários
+                                </label>
+                            </div>
+                            <div class="input-field">
+                                <i class="material-icons prefix">format_list_bulleted</i>
+                                <input id="icon_telephone" type="text" class="validate input2">
+                                <label for="icon_telephone" class="lb2">
+                                    Id problemas
+                                </label>
+                            </div>
+
+                            <button class="btn btn-block waves-effect waves-light" type="submit" name="action"
+                                style="width: 100%; background-color: #1e88e5;">
                                 Procurar
                                 <i class="material-icons right">send</i>
                             </button>
+
+
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -75,24 +87,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var input1 = document.querySelector('.input1');
             var input2 = document.querySelector('.input2');
 
-            input1.addEventListener('focus', function(){
+            input1.addEventListener('focus', function () {
                 input1.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
             })
 
-            input1.addEventListener('blur', function(){
+            input1.addEventListener('blur', function () {
                 input1.removeAttribute('placeholder')
                 document.querySelector('.lb1').classList.remove('active')
             })
 
-            input2.addEventListener('focus', function(){
+            input2.addEventListener('focus', function () {
                 input2.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
             })
 
-            input2.addEventListener('blur', function(){
+            input2.addEventListener('blur', function () {
                 input2.removeAttribute('placeholder')
                 document.querySelector('.lb2').classList.remove('active')
             })
