@@ -43,7 +43,7 @@ def scrap(users):
                 questions.add(link.text)
 
         response[str(userId)] = list(questions)
-        print(response)
+        print('response: ', response)
 
     return jsonify(response)
 
