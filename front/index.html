@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tomorrow">
     <!--Import materialize.css-->
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Biblioteca AXIOS para AJAX -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +19,11 @@
     <title>GoUri</title>
 
     <style>
+        .title {
+            display: inline-block;
+            margin: 0;
+        }
+
         ::-webkit-input-placeholder {
             color: #777;
         }
@@ -44,10 +53,17 @@
 <body class="deep-purple">
 
     <div class="container">
+
         <div class="row">
             <div class="s6 center-align">
-                <h4>GoUri</h4>
+                <h3 style="font-family: Tomorrow">
+                    <p class="title">Go</p>
+                    <p class="blue-text accent-1-text title">Uri</p>
+                </h3>
             </div>
+        </div>
+
+        <div class="row">
             <div class="col s12 m6 offset-m3">
                 <div class="card">
                     <div class="card-content">
@@ -80,6 +96,13 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col s12 m6 offset-m3">
+                <ul class="collection list-users" style="display: none;">
+                </ul>
+            </div>
+        </div>
     </div>
 
 
@@ -87,6 +110,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script>
+        
+
         document.addEventListener('DOMContentLoaded', function () {
             var input1 = document.querySelector('.input1');
             var input2 = document.querySelector('.input2');
@@ -107,6 +132,42 @@
             input2.addEventListener('blur', function () {
                 input2.removeAttribute('placeholder')
                 document.querySelector('.lb2').classList.remove('active')
+            })
+
+            var form = document.querySelector('form')
+            
+            form.addEventListener('submit', e => {
+                e.preventDefault()
+
+                if (input1.value === '' || input2.value === ''){
+                    M.toast({html: 'Preencha os campos!'})
+                    return false
+                }
+
+                const users = {
+                    'users': input1.value
+                }
+
+                console.log(users)
+
+                var lista  = document.querySelector('.list-users')
+
+                axios.post('http://localhost:5000/scrap', users)
+                    .then(response => {
+                        console.log(response)
+                        data = response.data[input1.value]
+                        var card = "<li class='collection-item avatar'>\
+                                        <img src='"+data.avatar+"' alt='' class='circle'>\
+                                        <span class='title'>"+ data.username +"</span>\
+                                        <p>Resolvidos: </p>\
+                                        <p>Não resolvidos: </p>\
+                                    </li>"
+                        lista.innerHTML = card
+                        lista.style.display = 'block'
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
             })
         });
     </script>

@@ -24,6 +24,8 @@ def scrap(users):
         tds = soup.find_all('td', class_='id')
 
         questions = set()
+        avatar = soup.find('div', class_='pb-avatar').img['src']
+        username = soup.find('div', class_='pb-username').p.a.text
 
         for td in tds:
             link = td.find('a')
@@ -42,13 +44,16 @@ def scrap(users):
                 link = td.find('a')
                 questions.add(link.text)
 
-        response[str(userId)] = list(questions)
+        response[userId] = {
+                'username': username,
+                'avatar': avatar,
+                'questoes': list(questions)
+        }
+
         print('response: ', response)
 
     return jsonify(response)
 
 def teste():
-    c = {'1', '2', '3'}
-    #b = list(c)
-    a = {'a': list(c)}
+    a = {'teste': [1,2,3]}
     return jsonify(a)
