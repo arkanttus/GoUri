@@ -144,8 +144,10 @@
                     return false
                 }
 
+                const input_users = input1.value.split(',')
+
                 const users = {
-                    'users': input1.value
+                    'users': input_users
                 }
 
                 console.log(users)
@@ -154,15 +156,17 @@
 
                 axios.post('http://localhost:5000/scrap', users)
                     .then(response => {
-                        console.log(response)
-                        data = response.data[input1.value]
-                        var card = "<li class='collection-item avatar'>\
-                                        <img src='"+data.avatar+"' alt='' class='circle'>\
-                                        <span class='title'>"+ data.username +"</span>\
-                                        <p>Resolvidos: </p>\
-                                        <p>Não resolvidos: </p>\
-                                    </li>"
-                        lista.innerHTML = card
+                        a = response
+                        response.data.forEach( data => {
+                            var card = "<li class='collection-item avatar'>\
+                                            <img src='"+data.avatar+"' alt='' class='circle'>\
+                                            <span class='title'>"+ data.username +"</span>\
+                                            <p>Resolvidos: </p>\
+                                            <p>Não resolvidos: </p>\
+                                        </li>"
+                            lista.innerHTML += card
+                        })
+
                         lista.style.display = 'block'
                     })
                     .catch(error => {
