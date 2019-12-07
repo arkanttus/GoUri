@@ -112,7 +112,7 @@
     <script>
         
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             var input1 = document.querySelector('.input1');
             var input2 = document.querySelector('.input2');
 
@@ -144,34 +144,55 @@
                     return false
                 }
 
-                const input_users = input1.value.split(',')
-
-                const users = {
-                    'users': input_users
-                }
-
-                console.log(users)
+                const users = input1.value.split(',')
 
                 var lista  = document.querySelector('.list-users')
 
-                axios.post('http://localhost:5000/scrap', users)
-                    .then(response => {
-                        a = response
-                        response.data.forEach( data => {
-                            var card = "<li class='collection-item avatar'>\
-                                            <img src='"+data.avatar+"' alt='' class='circle'>\
-                                            <span class='title'>"+ data.username +"</span>\
-                                            <p>Resolvidos: </p>\
-                                            <p>Não resolvidos: </p>\
-                                        </li>"
-                            lista.innerHTML += card
-                        })
+                users.map(async user => {
+                    const response = await axios.post('http://localhost:5000/scrap', {id: user})
+                        
+                    data = response.data
 
-                        lista.style.display = 'block'
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
+                    console.log(data)
+
+                    var card = "<li class='collection-item avatar'>\
+                                    <img src='"+data.avatar+"' alt='' class='circle'>\
+                                    <span class='title'>"+ data.username +"</span>\
+                                    <p>Resolvidos: </p>\
+                                    <p>Não resolvidos: </p>\
+                                </li>"
+
+                    lista.innerHTML += card
+                    
+
+                    lista.style.display = 'block'
+                })
+
+                /*const render = async () => {
+                    const responses =  await axios.post('http://localhost:5000/scrap', users)
+                        
+                    response = responses.data
+
+                    for(var key in response){
+                        data = response[key]
+
+                        var card = "<li class='collection-item avatar'>\
+                                        <img src='"+data.avatar+"' alt='' class='circle'>\
+                                        <span class='title'>"+ data.username +"</span>\
+                                        <p>Resolvidos: </p>\
+                                        <p>Não resolvidos: </p>\
+                                    </li>"
+
+                        lista.innerHTML += card
+                    }
+
+                    lista.style.display = 'block'
+                      
+                }*/
+
+                //render()
+                
+                console.log('foe')
             })
         });
     </script>

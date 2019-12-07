@@ -9,6 +9,6 @@ def teste():
 
 @routes.route('/scrap', methods=['POST'])
 def scrap():
-   users = request.get_json()
-   print('users :' , users)
-   return Scrap.scrap(users)
+   user = request.get_json()
+   print('user :' , user)
+   return Scrap.scrap(user)
