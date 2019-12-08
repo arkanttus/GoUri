@@ -71,15 +71,15 @@
 
                             <div class="input-field">
                                 <i class="material-icons prefix">account_circle</i>
-                                <input id="icon_prefix" type="text" class="validate input1">
-                                <label for="icon_prefix" class="lb1">
+                                <input id="user_input" type="text" class="validate">
+                                <label for="user_input" class="lb1">
                                     Id usuários
                                 </label>
                             </div>
                             <div class="input-field">
                                 <i class="material-icons prefix">format_list_bulleted</i>
-                                <input id="icon_telephone" type="text" class="validate input2">
-                                <label for="icon_telephone" class="lb2">
+                                <input id="problem_input" type="text" class="validate">
+                                <label for="problem_input" class="lb2">
                                     Id problemas
                                 </label>
                             </div>
@@ -110,87 +110,108 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <script>
-        
+
+        const is_empty = obj => (obj.value.trim() === '' || obj.value == null)
+
+        function render (data) {
+            const lista  = document.querySelector('.list-users')
+            const problem_input = document.querySelector('#problem_input');
+            const problems = problem_input.value.split(',')
+
+            console.log('render: ', data)
+
+            problems.forEach(p => {
+                if (data.questoes.includes(p))
+                    data.resolvidas.add(p)
+                else
+                    data.naoResolvidas.add(p)
+            })
+
+            const card = "<li class='collection-item avatar'>\
+                            <img src='"+data.avatar+"' alt='' class='circle'>\
+                            <span class='title'>"+ data.username +"</span>\
+                            <p><strong>Resolvidos: </strong><span id='resolvidas-"+data.id+"'>"+ [...data.resolvidas] +" </span></p>\
+                            <p><strong>Não resolvidos: </strong><span id='naoResolvidas-"+data.id+"'>"+ [...data.naoResolvidas] +" </span></p>\
+                        </li>"
+
+            lista.innerHTML += card
+            
+
+            lista.style.display = 'block'
+        }
+
+        function update (data) {
+            const elem_resolvidas  = document.querySelector('#resolvidas-'+data.id)
+            const elem_nResolvidas = document.querySelector('#naoResolvidas-'+data.id)
+            const problem_input = document.querySelector('#problem_input');
+            const problems = problem_input.value.split(',')
+
+            console.log('up: ', data)
+
+            problems.forEach(p => {
+                if (data.questoes.includes(p))
+                    data.resolvidas.add(p)
+                else
+                    data.naoResolvidas.add(p)
+            })
+
+            elem_resolvidas.innerHTML = [...data.resolvidas]
+            elem_nResolvidas.innerHTML = [...data.naoResolvidas]
+        }
+               
 
         document.addEventListener('DOMContentLoaded', async function () {
-            var input1 = document.querySelector('.input1');
-            var input2 = document.querySelector('.input2');
+            const user_input = document.querySelector('#user_input');
+            const problem_input = document.querySelector('#problem_input');
 
-            input1.addEventListener('focus', function () {
-                input1.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
+            user_input.addEventListener('focus', function () {
+                user_input.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
             })
 
-            input1.addEventListener('blur', function () {
-                input1.removeAttribute('placeholder')
-                document.querySelector('.lb1').classList.remove('active')
+            user_input.addEventListener('blur', function () {
+                user_input.removeAttribute('placeholder')
+                if(is_empty(user_input))
+                    document.querySelector('.lb1').classList.remove('active')
             })
 
-            input2.addEventListener('focus', function () {
-                input2.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
+            problem_input.addEventListener('focus', function () {
+                problem_input.setAttribute('placeholder', 'Separe os ids por vírgula e sem espaço!')
             })
 
-            input2.addEventListener('blur', function () {
-                input2.removeAttribute('placeholder')
-                document.querySelector('.lb2').classList.remove('active')
+            problem_input.addEventListener('blur', function () {
+                problem_input.removeAttribute('placeholder')
+                if(is_empty(problem_input))
+                    document.querySelector('.lb2').classList.remove('active')
             })
 
-            var form = document.querySelector('form')
+            const state = {}
+            const form = document.querySelector('form')
             
             form.addEventListener('submit', e => {
                 e.preventDefault()
 
-                if (input1.value === '' || input2.value === ''){
+                if (is_empty(user_input) || is_empty(problem_input)){
                     M.toast({html: 'Preencha os campos!'})
                     return false
                 }
 
-                const users = input1.value.split(',')
+                const users = user_input.value.split(',')
 
-                var lista  = document.querySelector('.list-users')
-
-                users.map(async user => {
-                    const response = await axios.post('http://localhost:5000/scrap', {id: user})
-                        
-                    data = response.data
-
-                    console.log(data)
-
-                    var card = "<li class='collection-item avatar'>\
-                                    <img src='"+data.avatar+"' alt='' class='circle'>\
-                                    <span class='title'>"+ data.username +"</span>\
-                                    <p>Resolvidos: </p>\
-                                    <p>Não resolvidos: </p>\
-                                </li>"
-
-                    lista.innerHTML += card
-                    
-
-                    lista.style.display = 'block'
-                })
-
-                /*const render = async () => {
-                    const responses =  await axios.post('http://localhost:5000/scrap', users)
-                        
-                    response = responses.data
-
-                    for(var key in response){
-                        data = response[key]
-
-                        var card = "<li class='collection-item avatar'>\
-                                        <img src='"+data.avatar+"' alt='' class='circle'>\
-                                        <span class='title'>"+ data.username +"</span>\
-                                        <p>Resolvidos: </p>\
-                                        <p>Não resolvidos: </p>\
-                                    </li>"
-
-                        lista.innerHTML += card
+                users.map(async id => {
+                    if(state[id]){
+                        update(state[id])
+                        return
                     }
 
-                    lista.style.display = 'block'
-                      
-                }*/
+                    const response = await axios.post('http://localhost:5000/scrap', {id: id})
+                    const data     = response.data
 
-                //render()
+                    state[id] = {id, resolvidas: new Set(), naoResolvidas: new Set(), ...data }
+                    
+                    console.log(state)
+
+                    render(state[id])
+                })
                 
                 console.log('foe')
             })
